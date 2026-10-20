@@ -2,7 +2,7 @@
 
 # Improving a custom metric with adacli
 
-Loop version 5. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
+Loop version 6. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
 
 > Improve the "No unverified refund promises" metric with adacli.
 > Filters: Date range = Last 30 days; Channel = Voice; Intent = Cancel a booking; Variable order_status = refunded
@@ -34,7 +34,7 @@ List the conversations with the undesirable verdict for the window and the filte
 ### 3. Find the root causes
 Group the failures by root cause. For each cause, find the article, the playbook step or the custom instruction that caused it.
 
-**Use:** `adacli <instance> conversations diagnose <conversation_id> --json`; `adacli <instance> knowledge probe --query <keywords> --json`; `adacli <instance> playbooks get <playbook_id> --json`; `adacli <instance> guidance list --json`.
+**Use:** `adacli <instance> conversations diagnose <conversation_id> --json`; `adacli <instance> playbooks get <playbook_id> --json`; `adacli <instance> guidance list --json`.
 
 **Report:** For each cause: its share of the transcripts you read, one conversation ID, and the article, playbook step or custom instruction behind it.
 

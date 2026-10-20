@@ -79,7 +79,7 @@ and check that the count dropped.
 | `knowledge` | `adacli <instance> knowledge create --title ... --file ...` (or `update <id>`) |
 | `guidance` | `adacli <instance> guidance create --title "..." --text "..."` (validate first: `guidance validate`) |
 | `coaching` | `adacli <instance> coaching create --conversation <id> --event <bot-msg-event-id> --module response_reasoner --type reply --plan contextual_response ...` |
-| `playbook` | `adacli <instance> playbooks update <id> --file ...` (test: `playbooks test <id> --message ...`) |
+| `playbook` | `adacli <instance> playbooks update <id> --file ...` |
 | `unknown` | Do not author a fix — the read was unverifiable (exit 22); retry the diagnose read (see the canonical exit-22 note in the `adacli` skill). If it stays `unknown`, the analytics read path is degraded — wait and retry. |
 
 Show the manager the change (diff against `baseline.json` via `snapshot diff`) before applying.
