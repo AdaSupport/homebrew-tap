@@ -57,6 +57,7 @@ adacli <instance> snapshot export -o config.json      # full config snapshot
 ## Conventions that make you effective
 
 - **Playbook SDK starts.** Read the `playbooks update <id>` section of `adacli docs guide --print` for SDK start options and prerequisites.
+- **Ask quick replies and image cards.** Before you author them, read the `ask` section of `adacli <instance> playbooks steps-schema`. On an ask with `inputs`, put the data source and card fields on the input, not on the step; the API rejects them on the step. After the write, check the `source:` and `card:` lines under the ask in `playbooks get <id>`.
 - **Exit-code semantics (canonical note).** Read `.capped`/`.partial` from `--json`
   (or the table footer), not the exit code, to tell a bounded cohort from a truncated one.
   - A `--limit` (or default) **cap** is not a failure: it sets `capped: true` and exits `0`.
