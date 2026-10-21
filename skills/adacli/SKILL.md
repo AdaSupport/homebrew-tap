@@ -37,7 +37,7 @@ adacli <instance> <command> [subcommand] [options]
 This skill is the entrypoint. For the complete command-by-command guide, run and read:
 
 ```bash
-adacli docs claude-code --print
+adacli <instance> docs claude-code
 ```
 
 Do that once at the start of an Ada session, then keep using the commands below.
@@ -56,7 +56,7 @@ adacli <instance> snapshot export -o config.json      # full config snapshot
 
 ## Conventions that make you effective
 
-- **Playbook SDK starts.** Read the `playbooks update <id>` section of `adacli docs guide --print` for SDK start options and prerequisites.
+- **Playbook SDK starts.** Read the `playbooks update <id>` section of `adacli <instance> docs guide` for SDK start options and prerequisites.
 - **Ask quick replies and image cards.** Before you author them, read the `ask` section of `adacli <instance> playbooks steps-schema`. On an ask with `inputs`, put the data source and card fields on the input, not on the step; the API rejects them on the step. After the write, check the `source:` and `card:` lines under the ask in `playbooks get <id>`.
 - **Exit-code semantics (canonical note).** Read `.capped`/`.partial` from `--json`
   (or the table footer), not the exit code, to tell a bounded cohort from a truncated one.
@@ -72,7 +72,7 @@ adacli <instance> snapshot export -o config.json      # full config snapshot
     `<file>.partial` alone. Only a partial (read-failure or safety-limit) walk writes `<file>.partial`
     and exits `20`, leaving `<file>` untouched. A capped `export` to stdout exits `0`.
     For transcript/reasoning export limits, read the Conversations section of
-    `adacli docs claude-code --print` (canonical export concurrency note).
+    `adacli <instance> docs claude-code` (canonical export concurrency note).
   - **Exit `22` (audit-degraded — canonical exit-22 note):** the read came back empty with
     no liveness signal after a retry — a degraded read, not a real empty result. Retry it;
     do not treat the empty result as a finding or author a fix on it. Emitters:
@@ -99,7 +99,7 @@ adacli <instance> snapshot export -o config.json      # full config snapshot
 - **To fix one bad turn when you don't know which setting should change**, use
   `refinements`: pick the turn with `refinements turns`, stage a change with `refinements create`,
   check it with `refinements validate`, then `refinements save` or `refinements discard` it. Before
-  the first call, read the Conversation Refinements section of `adacli docs claude-code --print`
+  the first call, read the Conversation Refinements section of `adacli <instance> docs claude-code`
   for the flow and how to act on each refusal code.
 - **Read before you write.** `get`/`list` the resource first; show the user the diff
   you intend before `create`/`update`/`delete`.
