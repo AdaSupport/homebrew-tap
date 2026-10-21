@@ -2,7 +2,7 @@
 
 # Improving a custom metric with adacli
 
-Loop version 6. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
+Loop version 7. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
 
 > Improve the "No unverified refund promises" metric with adacli.
 > Filters: Date range = Last 30 days; Channel = Voice; Intent = Cancel a booking; Variable order_status = refunded
@@ -16,6 +16,8 @@ The Filters line uses the dashboard's names and values. Date range sets `--start
 adacli has no pass rate command with filters. In step 1, count the `pass` and the `fail` conversations with `conversations search` and the same filters. Keep `--filter ISTESTUSER:IS:true` on every search, because the dashboard pass rate counts test conversations. The pass rate is pass / (pass + fail). Each count is complete only when the command exits 0 and its JSON shows `partial: false` and `capped: false`. If a count is not complete, report the pass rate as incomplete. Do not divide.
 
 In step 6, make a private folder with `mktemp -d`. Its mode is 0700, so only you can read it. Write the new test cases to one JSON file in that folder, as an array with one object per test case. Pass the file to `testing cases create`. Then delete the folder, also when the create fails or stops. Each object has `name`, `user_message`, `scenario`, `success_criteria`, `channel_id`, `language`, `variables` and `external_systems`. The file keeps the long `external_systems` text out of the shell.
+
+In step 4, if `custom-metrics --help` does not list `verdicts`, tell the user to upgrade adacli. Until then, compare the transcript with the metric's pass and fail text only.
 
 ### 1. Read the metric and its numbers
 Resolve the metric by its name. If no metric or more than one metric has that name, ask the user which one. Read its pass, fail and not-applicable text, its direction, its scope and its state. Then read its pass rate for the window and the filters.
@@ -39,11 +41,11 @@ Group the failures by root cause. For each cause, find the article, the playbook
 **Report:** For each cause: its share of the transcripts you read, one conversation ID, and the article, playbook step or custom instruction behind it.
 
 ### 4. List the suspected judge errors
-Compare each transcript you read with the metric's own pass and fail text. If the transcript does not match the verdict, list it as a suspected judge error. Do not fix it. Do not edit the metric during the loop: the author reviews the definition.
+For each conversation you read, read the judge's reasoning and quote on the metric's verdict. Compare them with the transcript and with the metric's own pass and fail text. If the transcript does not support the verdict, list it as a suspected judge error. Do not fix it. Do not edit the metric during the loop: the author reviews the definition.
 
-**Use:** `adacli <instance> conversations log <conversation_id> --json`.
+**Use:** `adacli <instance> custom-metrics verdicts <conversation_id> --json`; `adacli <instance> conversations log <conversation_id> --json`.
 
-**Report:** Each suspected judge error with its conversation ID and the turn that contradicts the verdict, or none found.
+**Report:** Each suspected judge error with its conversation ID, the judge's quote and the turn that contradicts the verdict, or none found.
 
 ### 5. Stage the fix on a change set
 Put the smallest set of edits that fixes the causes on one change set. If a change set in testing already holds a fix for the same cause, add to it by its ID. Otherwise start a new change set by name. Change nothing live.
