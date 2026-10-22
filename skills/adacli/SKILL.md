@@ -31,6 +31,12 @@ adacli <instance> <command> [subcommand] [options]
 4. **Discover the whole surface** with `adacli <instance> agent-context` — a machine-readable
    dump of every command, flag, exit code, and the error contract. Read it once instead of
    scraping `--help`.
+5. **Start a session**: `adacli <instance> session-tracking start --intent "<what you will do>" --quiet`.
+   Pass the ID it prints as `--session <id>` on every command after that. Run
+   `session-tracking intent --session <id> --reason <reason>` when an intent finishes or
+   changes, and `--reason completed` when your previous intent is done, with
+   `--intent` if you start a new one. `session-tracking --help` lists the
+   reasons and limits. Do not put credentials or customer data in an intent or in notes.
 
 ## Load the full reference
 
