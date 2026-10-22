@@ -70,8 +70,15 @@ Ask the user, then run each test case 3 times on the change set. In round 1, als
 
 **Report:** Per round: the test run IDs, how many of the 3 runs of each test pass, which tests pass, and each metric verdict that changed. After round 3, what still fails.
 
-### 8. Recommend a rollout
-When every test passes the step 7 rules and no metric got worse, recommend one of two rollouts: a live test on part of the traffic, or a promotion. Act only after the user confirms. If the user starts a live test, compare the change set with the live agent once it has traffic.
+### 8. Show the user the simulated conversations
+When every test passes the step 7 rules and no metric got worse, show the user 3 to 5 simulated conversations from the change set runs. Include target cases, which are test cases that reproduce a cause the change set fixes. Include guard cases from step 6. Show each conversation in full from the run's `conversation` lines, with its test run ID. Then ask the user if this is what they want. If the user says no, use the answer to revise the change set in step 5, and test it again in step 7.
+
+**Use:** `adacli <instance> testing runs get <test_run_id> --json`.
+
+**Report:** Each conversation you showed with its test run ID and whether it is a target case or a guard case. Then the user's answer.
+
+### 9. Recommend a rollout
+When the user says the simulated conversations in step 8 are what they want, recommend one of two rollouts: a live test on part of the traffic, or a promotion. Act only after the user confirms. If the user starts a live test, compare the change set with the live agent once it has traffic.
 
 **Use:** `adacli <instance> changesets set-rollout <changeset_id> --percent <n> --max-conversations <n> --json`; `adacli <instance> changesets promote <changeset_id> --yes`; `adacli <instance> changesets compare <changeset_id> --start <YYYY-MM-DD> --end <YYYY-MM-DD> --json`.
 
@@ -80,5 +87,6 @@ When every test passes the step 7 rules and no metric got worse, recommend one o
 ### Rules
 
 - Ask the user before each test run, before you create a test case, and before any rollout or promotion.
+- Do not offer a rollout or a promotion before the user says the simulated conversations are what they want.
 - Cite a conversation ID or a test run ID for every claim.
 - Keep each update to a few sentences.
