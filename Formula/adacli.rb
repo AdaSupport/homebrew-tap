@@ -6,29 +6,29 @@
 class Adacli < Formula
   desc "Agent-native CLI for managing and improving Ada AI Agents"
   homepage "https://github.com/AdaSupport/homebrew-tap"
-  version "0.13.13"
+  version "0.13.14"
   # Proprietary — AdaCLI License Notice (© Ada Support Inc.), not an SPDX/open-source license.
   license :cannot_represent
 
   on_macos do
     on_arm do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v0.13.13/adacli-darwin-arm64.tar.gz"
-      sha256 "8a11da26291ed780f9e8ae55d62943c9b4ff9c46156acf201bb5bcab6492fb24"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v0.13.14/adacli-darwin-arm64.tar.gz"
+      sha256 "0ef47ca105fb7eef26f81a7c91423ca720058722d1c867f98a5812173f7be22b"
     end
     on_intel do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v0.13.13/adacli-darwin-x64.tar.gz"
-      sha256 "7df40dde79550d9276a70a8eb688cbe8fcd8713811c2e009c75d38b70cd32248"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v0.13.14/adacli-darwin-x64.tar.gz"
+      sha256 "e8a42f85b60e44d5f12cb5ebb212a7692a6253b17d780447adbaad0b26fd19f8"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v0.13.13/adacli-linux-arm64.tar.gz"
-      sha256 "1e53df71d935f159ae4f22e1245af89a1c2c0e3fe28b1b2e0c85763bd31615ea"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v0.13.14/adacli-linux-arm64.tar.gz"
+      sha256 "97948c8b45de5682e7bb5a8f5b424837ba59b066679963af2dc7852bf0771e86"
     end
     on_intel do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v0.13.13/adacli-linux-x64.tar.gz"
-      sha256 "1cc65d6e1e597b20111896c6cb33d54858bf10a998bd51febc17058e4daa610d"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v0.13.14/adacli-linux-x64.tar.gz"
+      sha256 "bff141fd971e6e8af7a80e8cebcaa7989d4d076c45e0a201064e1968579f1c71"
     end
   end
 
