@@ -96,17 +96,12 @@ adacli <instance> snapshot export -o config.json      # full config snapshot
   `--all` flag. A bare `search` returns only the first page (30 rows). The JSON `total` of
   `search` and `export` follows the canonical total note. `--all` auto-paginates the whole window; pair it with `--limit <n>` to bound the walk (see Exit-code semantics above
   for how a cap vs a partial walk is reported). List commands (`knowledge list`, etc.) page with
-  `--page` plus `--limit` (e.g. `knowledge list --page 2 --limit 25`); `changesets list`,
-  `improve list`, and `improve queue list` page with `--cursor`.
+  `--page` plus `--limit` (e.g. `knowledge list --page 2 --limit 25`); `changesets list`
+  pages with `--cursor`.
 - **`conversations recent` shows the 40 newest by default** (canonical recent note). Widen it
   with `--limit <n>`. It walks pages like `--all`, so the default 40-row cap (or a `--limit`
   cap) sets `capped: true` and exits `0` (see Exit-code semantics above). Its JSON `total`
   follows the canonical total note.
-- **To fix one bad turn when you don't know which setting should change**, use
-  `refinements`: pick the turn with `refinements turns`, stage a change with `refinements create`,
-  check it with `refinements validate`, then `refinements save` or `refinements discard` it. Before
-  the first call, read the Conversation Refinements section of `adacli <instance> docs claude-code`
-  for the flow and how to act on each refusal code.
 - **Read before you write.** `get`/`list` the resource first; show the user the diff
   you intend before `create`/`update`/`delete`.
 - **Destructive ops** (`delete`, `snapshot import --mode replace`) need confirmation;
