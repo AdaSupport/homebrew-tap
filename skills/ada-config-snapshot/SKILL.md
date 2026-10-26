@@ -1,6 +1,6 @@
 ---
 name: ada-config-snapshot
-description: Version-control an Ada agent's configuration and promote changes between instances using adacli snapshots (export → git → diff → import). Use when the user wants to back up, diff, restore, GitOps, or copy config from one Ada instance to another (e.g. staging → production).
+description: Version-control an Ada agent's configuration and promote changes between instances using adacli snapshots (export → git → dry run → import). Use when the user wants to back up, compare, restore, GitOps, or copy config from one Ada instance to another (e.g. staging → production).
 require-tools:
   - Bash
   - Read
@@ -9,55 +9,72 @@ require-tools:
 
 # Ada config as version-controlled snapshots
 
-`adacli snapshot` exports an instance's full configuration to one deterministic
-(key-sorted, diffable) JSON file, and imports it back — the basis for GitOps and
-promotion between instances.
+`adacli snapshot` runs Ada's Snapshot engine, the engine of the public Snapshot API
+(`/v2/config/`). An export takes the whole AI Agent as one `.tar.gz` archive. Unpacked, the
+archive holds `config.json`, `manifest.json` and `articles/`. Keep the unpacked folder in git
+for GitOps and promotion between instances.
 
 ## Back up / baseline
 
 ```bash
-adacli <instance> snapshot export -o <instance>.json
-git add <instance>.json && git commit -m "baseline config for <instance>"
+adacli <instance> snapshot export -o <instance>/
+git add <instance> && git commit -m "baseline config for <instance>"
 ```
 
-Filter resource types with `--include` / `--exclude` (e.g. `--include knowledge guidance`).
+An export always takes the whole AI Agent. `-o <file>.tar.gz` writes the archive. `-o -`
+writes it to stdout. Any other `-o` path is a folder. A second export into the same folder replaces only `config.json`,
+`manifest.json` and `articles/`, so `git diff` shows what changed.
 
-API traffic profiles are opt-in and not part of a plain export or import. To carry them,
-for example into a clone used for simulations, pass `--with-profiles` to both
-`snapshot export` and `snapshot import`, and keep `actions` in any `--include`. It needs
-an Ada employee login and a sampler-enabled bot. A profile holds values seen in the
-source bot's production responses, and the plain export does not scrub them, so do not
-commit or share a `--with-profiles` export.
+The export prints the names of the secret values that the snapshot needs. Ask the user for
+each value before an import, and pass it with `--secret NAME=VALUE`.
 
 ## See what changed
 
-After edits in the dashboard (or before importing), diff the live instance against a file:
+Before an import, show what it would change on the live instance:
 
 ```bash
-adacli <instance> snapshot diff <instance>.json
+adacli <instance> snapshot import <instance>/ --dry-run
 ```
 
-Show the user the diff and get agreement before any import.
+`--dry-run` writes nothing. It prints the create, update and delete count of each section,
+and the names that an import deletes. Show the user the result and get agreement before any
+import.
 
 ## Promote between instances (e.g. staging → prod)
 
-Always dry-run first, then apply:
+Validate first, then apply:
 
 ```bash
-# Merge: add/update resources from the file, leave others intact
-adacli <target> snapshot import staging.json --mode merge --dry-run
-adacli <target> snapshot import staging.json --mode merge
+# Validate only. Writes nothing.
+adacli <target> snapshot import staging/ --dry-run
 
-# Replace: DESTRUCTIVE — deletes everything not in the file. Requires --confirm.
-adacli <target> snapshot import staging.json --mode replace --dry-run
-# ...only after explicit user confirmation:
-adacli <target> snapshot import staging.json --mode replace --confirm
+# Apply, only after explicit user confirmation
+adacli <target> snapshot import staging/ --confirm
+
+# Promote some sections only. What they reference comes along.
+adacli <target> snapshot import staging/ --include playbooks --confirm
 ```
+
+An import replaces each section that it imports. The apply deletes every item that the archive
+does not carry in that section. A section that comes along by reference is only added to.
+
+## Roll back
+
+Import the baseline with `--include` for the section that changed:
+
+```bash
+adacli <instance> snapshot import <instance>/ --include knowledge --dry-run
+adacli <instance> snapshot import <instance>/ --include knowledge --confirm
+```
+
+To restore one item, use the create or update command of that resource.
 
 ## Rules
 
-- **Never `--mode replace` without a dry-run + explicit user sign-off** — it deletes.
-- Respect read_only instances; if the target is read_only the import is refused.
+- Run `--dry-run` and get explicit user sign-off before every import. Every delete count is a
+  real deletion.
+- If the import stops with `SNAPSHOT_BLOCKED` (exit 9), show the user each blocker. Fix them on
+  the target, then import again.
+- An import needs the admin or owner role. A read_only instance refuses it.
 - Commit the snapshot before and after a change so the repo is the source of truth.
-- Use `--include`/`--exclude` to keep promotions surgical (e.g. promote only `playbooks`).
-- Leave out `--preserve-ids` between Ada instances. Another bot's IDs would move that bot's documents, so the importer refuses the flag unless the target is the `test` bot of a local stack. A restore of the same bot keeps its IDs anyway.
+- Use `--include` to keep promotions surgical (e.g. promote only `playbooks`).

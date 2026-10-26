@@ -26,8 +26,8 @@ Run `changesets promote --yes` or `changesets set-rollout` only after the user c
 
 ```bash
 adacli <instance> status --json                          # confirm session
-adacli <instance> snapshot export -o baseline.json       # rollback point — commit to git
-git add baseline.json && git commit -m "pre-optimization baseline"
+adacli <instance> snapshot export -o baseline/           # rollback point — commit to git
+git add baseline && git commit -m "pre-optimization baseline"
 adacli <instance> testing quota --json                   # runs are metered — don't burn them in loops
 ```
 Never run destructive ops without the user's OK. Respect read-only instances.
@@ -82,7 +82,7 @@ and check that the count dropped.
 | `playbook` | `adacli <instance> playbooks update <id> --file ...` |
 | `unknown` | Do not author a fix — the read was unverifiable (exit 22); retry the diagnose read (see the canonical exit-22 note in the `adacli` skill). If it stays `unknown`, the analytics read path is degraded — wait and retry. |
 
-Show the manager the change (diff against `baseline.json` via `snapshot diff`) before applying.
+Show the manager the change (`snapshot import baseline/ --dry-run` shows what the baseline would change back) before applying.
 
 ## 5. Re-test + compare — did it help?
 
@@ -99,7 +99,7 @@ adacli <instance> testing runs compare --baseline <baseline-run-ids...> --candid
 adacli <instance> optimize record --pass-rate <new-rate> --change "added shared-accounts KB article"
 
 # regressed → roll back the change, then record it as not kept
-adacli <instance> snapshot import baseline.json --mode merge --include knowledge   # or delete the edit
+adacli <instance> snapshot import baseline/ --include knowledge --confirm   # or delete the edit
 adacli <instance> optimize record --pass-rate <rate> --change "coaching attempt" --rolled-back
 ```
 

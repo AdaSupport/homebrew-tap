@@ -57,13 +57,13 @@ adacli <instance> playbooks list --json               # playbooks
 adacli <instance> guidance list --json                # custom instructions
 adacli <instance> conversations search --all --limit 500 --json  # find conversations (see --all note below)
 adacli <instance> analytics summary --json            # ClickHouse volume, resolution, and CSAT
-adacli <instance> snapshot export -o config.json      # full config snapshot
+adacli <instance> snapshot export -o config.tar.gz    # full config snapshot
 ```
 
 ## Conventions that make you effective
 
 - **Playbook SDK starts.** Read the `playbooks update <id>` section of `adacli <instance> docs guide` for SDK start options and prerequisites.
-- **Ask quick replies and image cards.** Before you author them, read the `ask` section of `adacli <instance> playbooks steps-schema`. On an ask with `inputs`, put the data source and card fields on the input, not on the step; the API rejects them on the step. After the write, check the `source:` and `card:` lines under the ask in `playbooks get <id>`.
+- **Ask quick replies and image cards.** Before you author them, read the `ask` section of `adacli <instance> playbooks steps-schema`. On an ask with `inputs`, put the data source and card fields on the input, not on the step; the API rejects them on the step. Cards on manual choices use `accepted_values_images`, `_descriptions` and `_button_labels`, keyed by accepted value. After the write, check the `source:`, `card:` and `cards:` lines under the ask in `playbooks get <id>`; `cards:` says if Web Chat shows cards or plain choices.
 - **Exit-code semantics (canonical note).** Read `.capped`/`.partial` from `--json`
   (or the table footer), not the exit code, to tell a bounded cohort from a truncated one.
   - A `--limit` (or default) **cap** is not a failure: it sets `capped: true` and exits `0`.
@@ -104,7 +104,7 @@ adacli <instance> snapshot export -o config.json      # full config snapshot
   follows the canonical total note.
 - **Read before you write.** `get`/`list` the resource first; show the user the diff
   you intend before `create`/`update`/`delete`.
-- **Destructive ops** (`delete`, `snapshot import --mode replace`) need confirmation;
+- **Destructive ops** (`delete`, `snapshot import`) need confirmation;
   pass `--confirm`/`--force` only after the user agrees.
 - **Read-only instances**: production-like instances may be marked read_only in
   `~/.adacli/config`; writes will be refused with a clear error — don't fight it.
