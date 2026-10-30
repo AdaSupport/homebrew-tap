@@ -2,7 +2,7 @@
 
 # Improving a custom metric with adacli
 
-Loop version 8. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
+Loop version 9. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
 
 > Improve the "No unverified refund promises" metric with adacli.
 > Filters: Date range = Last 30 days; Channel = Voice; Intent = Cancel a booking; Variable order_status = refunded
