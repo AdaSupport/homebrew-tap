@@ -29,10 +29,13 @@ create/get/update/delete options.
 adacli <instance> testing cases create --help   # see required fields, then:
 adacli <instance> testing cases create ...       # persona, objective, eval criteria, hard-fails
 
-# Or scaffold directly from a real (failing) conversation — example + outcome:
-adacli <instance> testing cases from-conversation <conversation-id>           # review the scaffold
-adacli <instance> testing cases from-conversation <conversation-id> --create  # create it
+# Or draft one from a real (failing) conversation. Every personal value is faked:
+adacli <instance> testing cases from-conversation <conversation-id> --json   # draft + instructions
 ```
+
+The draft's `instructions` field holds the steps that write, save and run the test case.
+[test-case-from-conversation.md](test-case-from-conversation.md) has the same steps. The
+command saves nothing.
 
 ## Run and read results
 

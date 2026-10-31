@@ -63,7 +63,7 @@ adacli <instance> snapshot export -o config.tar.gz    # full config snapshot
 ## Conventions that make you effective
 
 - **Playbook SDK starts.** Read the `playbooks update <id>` section of `adacli <instance> docs guide` for SDK start options and prerequisites.
-- **Ask quick replies and image cards.** Before you author them, read the `ask` section of `adacli <instance> playbooks steps-schema`. On an ask with `inputs`, put the data source and card fields on the input, not on the step; the API rejects them on the step. Cards on manual choices use `accepted_values_images`, `_descriptions` and `_button_labels`, keyed by accepted value. After the write, check the `source:`, `card:` and `cards:` lines under the ask in `playbooks get <id>`; `cards:` says if Web Chat shows cards or plain choices.
+- **Ask quick replies and image cards.** Before you author them, read the `ask` section of `adacli <instance> playbooks steps-schema`. On an ask with `inputs`, put the data source and card fields on the input, not on the step; the API rejects them on the step. Cards on manual choices use `accepted_values_images`, `_descriptions`, `_button_labels` and `_titles`, keyed by accepted value. After the write, check the `source:`, `card:` and `cards:` lines under the ask in `playbooks get <id>`; `cards:` says if Web Chat shows cards or plain choices.
 - **Exit-code semantics (canonical note).** Read `.capped`/`.partial` from `--json`
   (or the table footer), not the exit code, to tell a bounded cohort from a truncated one.
   - A `--limit` (or default) **cap** is not a failure: it sets `capped: true` and exits `0`.
@@ -82,7 +82,7 @@ adacli <instance> snapshot export -o config.tar.gz    # full config snapshot
   - **Exit `22` (audit-degraded — canonical exit-22 note):** the read came back empty with
     no liveness signal after a retry — a degraded read, not a real empty result. Retry it;
     do not treat the empty result as a finding or author a fix on it. Emitters:
-    `conversations diagnose`, `testing cases from-conversation`, and the single-id readers
+    `conversations diagnose` and the single-id readers
     `conversations reasoning`, `transcript`, `log`, `details`, `handoffs`, and `guidance`.
   - **`analytics summary`, `analytics topics` and `conversations handoff-reasons` are NOT degraded-read-guarded.** The
     ClickHouse backend returns the same zeroed payload for a real quiet window and for its

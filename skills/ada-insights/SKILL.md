@@ -16,7 +16,7 @@ understand and where the agent fails. Use it to diagnose, not just report.
 ```bash
 adacli <instance> analytics summary --json                  # ClickHouse resolution, volume, and CSAT
 adacli <instance> analytics topics --json                   # ClickHouse topic performance
-adacli <instance> topics list --json                        # AI-generated topics
+adacli <instance> topics generated list --json              # AI-generated topics
 adacli <instance> conversations search --resolution not-resolved --since 30d --all --limit 500 --json  # the failure cohort
 adacli <instance> conversations search --topic <t> --csat 1 2 --all --limit 500 --json  # low-CSAT in a topic
 adacli <instance> conversations recent --json               # newest first (40-row default cap); see the canonical recent note in the `adacli` skill

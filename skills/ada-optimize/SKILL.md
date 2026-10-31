@@ -45,10 +45,11 @@ adacli <instance> conversations handoff-reasons --since 7d --count --json
 adacli <instance> conversations handoff-reasons --since 7d --handoff-reason <code> --samples 5 --with-reasoning --json
 # reasoning is often null (e.g. tool_failed, system_failed): use reason_code, target, outcome and the transcript
 
-# Turn real failing conversations into eval cases (example + outcome)
-adacli <instance> testing cases from-conversation <conversation-id> --json   # review the scaffold
-adacli <instance> testing cases from-conversation <conversation-id> --create # then create it
+# Turn a real failing conversation into an eval case. Every personal value is faked
+adacli <instance> testing cases from-conversation <conversation-id> --json   # draft + instructions
 ```
+Follow the draft's `instructions` to write and save each case. The same steps are in
+[../ada-test-agent/test-case-from-conversation.md](../ada-test-agent/test-case-from-conversation.md).
 Curate a small, high-signal set of cases — your bar. The manager decides which examples matter.
 
 ## 2. Baseline — start the hill-climb
