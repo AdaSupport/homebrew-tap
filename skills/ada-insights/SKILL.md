@@ -96,6 +96,21 @@ the surface; *you* author the fix — see **ada-optimize** to close the loop.) A
 4. Summarize the pattern + the specific fix for the user. Don't change anything without
    showing the diagnosis first.
 
+## Review recommended intents
+
+The classifier proposes intents for conversations no active intent covers.
+
+```bash
+adacli <instance> topics class recommendations --json          # candidates, by volume and gap share
+adacli <instance> conversations search --intent <intent-id> --all --limit 20 --json  # sample one
+adacli <instance> topics class recommendations approve <intent-id> [--name ...]   # preview; add --yes to apply
+adacli <instance> topics class recommendations dismiss <intent-id>               # preview; add --yes to apply
+adacli <instance> topics class intents update <topic-id> <intent-id> --included "..."  # refine an active intent
+```
+
+Approve, dismiss and update change the live taxonomy. Show the user the sampled evidence and
+the preview first, and run `--yes` only after they agree.
+
 ## Rules
 
 - This skill is **read-only** — it diagnoses. Make changes via **ada-knowledge**,
