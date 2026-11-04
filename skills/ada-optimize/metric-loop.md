@@ -2,7 +2,7 @@
 
 # Improving a custom metric with adacli
 
-Loop version 11. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
+Loop version 12-backfill. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
 
 > Improve the "No unverified refund promises" metric with adacli.
 > Filters: Date range = Last 30 days; Channel = Voice; Intent = Cancel a booking; Variable order_status = refunded
@@ -21,12 +21,21 @@ In step 4, if `custom-metrics --help` does not list `verdicts`, tell the user to
 
 In steps 5 and 6, if `changesets stage --help` does not list `--custom-metric`, run the commands without `--custom-metric` and leave `metric_ids` out of the test case file. Then tell the user to upgrade adacli, so the change set and the test cases link to the metric.
 
+Run step 1a only if `custom-metrics --help` lists `backfill`. adacli lists it only when backfills are on for the account. In step 1a, `custom-metrics get --json` holds the backfill in `backfill.job`, which is null when the metric has none. adacli gives no reason for a failed backfill, so report its status. A dry run that cannot start exits with the error code `BACKFILL_REFUSED` and shows no preview. Its `reasonCode` takes the place of the preview. If the code is `edited_since_activation` or `activated_before_tracking`, the metric changed after it went live, or went live before backfills were available. Leave the metric as it is. Follow the error's hint only when the user asks to re-score. If the code is `monthly_limit_reached`, the account has no backfill left.
+
 ### 1. Read the metric and its numbers
 Resolve the metric by its name. If no metric or more than one metric has that name, ask the user which one. Read its pass, fail and not-applicable text, its direction, its scope and its state. Then read its pass rate for the window and the filters.
 
 **Use:** `adacli <instance> custom-metrics list --json`; `adacli <instance> custom-metrics get <metric_id> --json`; `adacli <instance> conversations search --custom-metric <metric_id> --metric-result pass --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter ISTESTUSER:IS:true --all --json`; `adacli <instance> conversations search --custom-metric <metric_id> --metric-result fail --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter ISTESTUSER:IS:true --all --json`.
 
 **Report:** The metric's name and ID, its direction, scope and state, the window and the number of conversations with a verdict in it, whether the user set them or the default applied, each filter as applied or not applied, the pass rate with the pass and fail counts, and the loop version.
+
+### 1a. Score the conversations from before the metric went live
+A metric grades only the conversations that finish after it goes live. A backfill scores it once on the most recent conversations from before. After a new metric goes live, in this loop or outside it, offer the user a backfill. Run this step only when step 1 finds fewer conversations with a verdict than the window asks for, and the metric has no backfill or its backfill failed. If it failed, report the reason it gives. Preview a backfill. If the window is a number of conversations, ask for the ones that step 1 is missing. Otherwise keep the default. The preview shows the conversations it scores and the backfills the account has left this month. Show it to the user, and start the backfill only when the user confirms. It runs in the background. When its status is done, read the numbers of step 1 again. A backfill scores the text that first went live. If the preview says that the metric changed after that, leave the metric as it is: it keeps grading. If the user asks to re-score it, tell them first that the old metric then stops grading. Create a copy of the metric as a draft, with the same fields and a new name. Set the old metric to draft. Activate the copy, then backfill it. Run the loop on the copy. If the user says no, or the account has no backfill left, go on with what step 1 found.
+
+**Use:** `adacli <instance> custom-metrics backfill <metric_id> --conversations <n> --dry-run --json`; `adacli <instance> custom-metrics backfill <metric_id> --conversations <n> --yes --json`; `adacli <instance> custom-metrics get <metric_id> --json`; `adacli <instance> custom-metrics create --draft --name <new_name> with the old metric's other fields --json`; `adacli <instance> custom-metrics deactivate <metric_id> --json`; `adacli <instance> custom-metrics activate <copy_id> --json`.
+
+**Report:** Whether you ran this step, and why. If you did: the preview, the user's answer, and the backfill's status.
 
 ### 2. Read the failing conversations
 List the conversations with the undesirable verdict for the window and the filters. Include test conversations, because the pass rate counts them. If step 1 already listed them, use that list. Read at least 3 full transcripts. Take the number of failures from step 1, not from the length of a list.
