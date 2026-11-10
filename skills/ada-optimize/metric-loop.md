@@ -2,7 +2,7 @@
 
 # Improving a custom metric with adacli
 
-Loop version 12-backfill. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
+Loop version 13-backfill. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
 
 > Improve the "No unverified refund promises" metric with adacli.
 > Filters: Date range = Last 30 days; Channel = Voice; Intent = Cancel a booking; Variable order_status = refunded
@@ -17,7 +17,7 @@ adacli has no pass rate command with filters. In step 1, count the `pass` and th
 
 In step 6, make a private folder with `mktemp -d`. Its mode is 0700, so only you can read it. Write the new test cases to one JSON file in that folder, as an array with one object per test case. Pass the file to `testing cases create`. Then delete the folder, also when the create fails or stops. Each object has `name`, `user_message`, `scenario`, `success_criteria`, `channel_id`, `language`, `variables`, `external_systems` and `metric_ids`. The file keeps the long `external_systems` text out of the shell.
 
-In step 4, if `custom-metrics --help` does not list `verdicts`, tell the user to upgrade adacli. Until then, compare the transcript with the metric's pass and fail text only.
+In step 4, if `custom-metrics --help` does not list `verdicts`, tell the user to upgrade adacli. Until then, compare the transcript with the metric's pass, fail and scoring guidance text only.
 
 In steps 5 and 6, if `changesets stage --help` does not list `--custom-metric`, run the commands without `--custom-metric` and leave `metric_ids` out of the test case file. Then tell the user to upgrade adacli, so the change set and the test cases link to the metric.
 
@@ -52,7 +52,7 @@ Group the failures by root cause. For each cause, find the article, the playbook
 **Report:** For each cause: its share of the transcripts you read, one conversation ID, and the article, playbook step or custom instruction behind it.
 
 ### 4. List the suspected judge errors
-For each conversation you read, read the judge's reasoning and quote on the metric's verdict. Compare them with the transcript and with the metric's own pass and fail text. If the transcript does not support the verdict, list it as a suspected judge error. Do not fix it. Do not edit the metric during the loop: the author reviews the definition.
+For each conversation you read, read the judge's reasoning and quote on the metric's verdict. Compare them with the transcript and with the metric's own pass, fail and scoring guidance text. A case the scoring guidance routes is decided. If the transcript does not support the verdict, list it as a suspected judge error. Do not fix it. Do not edit the metric during the loop: the author reviews the definition.
 
 **Use:** `adacli <instance> custom-metrics verdicts <conversation_id> --json`; `adacli <instance> conversations log <conversation_id> --json`.
 
@@ -75,7 +75,7 @@ Find the test cases that cover each cause. Start with the test cases that list t
 **Report:** For each cause, its test case IDs. Then the guard case IDs for the change set. For each new test case, the conversation it comes from and whether the user approved it.
 
 ### 7. Test the change set
-Ask the user, then run each test case 3 times on the change set. In round 1, also run each test case 3 times on the live agent, with no change set. A test passes when at least 2 of its 3 runs pass, so read every run, not only the latest. Wait until every run is completed, failed, timed out or cancelled before you compare. Compare each test on the change set with the same test on the live agent. A test case that reproduces a cause must pass on the change set. A guard case must pass on the change set when it passes on the live agent. If a guard case also fails on the live agent, report it and do not revise the change set for it. Do not edit the test cases between rounds. If a test fails one of these rules or a metric gets worse, revise the change set and run the tests again. A metric verdict that moves from a failure to undecided is not a fix. Report it, and propose a rewrite of the metric's pass and fail text, because a change to the AI Agent does not decide it. Stop after 3 rounds.
+Ask the user, then run each test case 3 times on the change set. In round 1, also run each test case 3 times on the live agent, with no change set. A test passes when at least 2 of its 3 runs pass, so read every run, not only the latest. Wait until every run is completed, failed, timed out or cancelled before you compare. Compare each test on the change set with the same test on the live agent. A test case that reproduces a cause must pass on the change set. A guard case must pass on the change set when it passes on the live agent. If a guard case also fails on the live agent, report it and do not revise the change set for it. Do not edit the test cases between rounds. If a test fails one of these rules or a metric gets worse, revise the change set and run the tests again. A metric verdict that moves from a failure to undecided is not a fix. Report it, and propose a rewrite that names the case in the metric's scoring guidance and sends it to pass, fail or not applicable, because a change to the AI Agent does not decide it. Stop after 3 rounds.
 
 **Use:** `adacli <instance> testing runs create --cases <test_case_ids> --changeset <changeset_id> --repeat 3 --json`; `adacli <instance> testing runs create --cases <test_case_ids> --repeat 3 --json`; `adacli <instance> testing runs get <test_run_id> --json`; `adacli <instance> testing runs compare --baseline <live_run_ids> --candidate <changeset_run_ids> --json`.
 
@@ -89,11 +89,11 @@ When every test passes the step 7 rules and no metric got worse, show the user 3
 **Report:** Each conversation you showed with its test run ID and whether it is a target case or a guard case. Then the user's answer.
 
 ### 9. Recommend a rollout
-When the user says the simulated conversations in step 8 are what they want, recommend one of two rollouts: a live test on part of the traffic, or a promotion. Act only after the user confirms. If the user starts a live test, compare the change set with the live agent once it has traffic. A pass rate leaves undecided conversations out. If a metric's undecided conversations rose and its failures fell, both as a share of pass, fail and undecided, failures may have become undecided: do not report it as an improvement.
+When the user says the simulated conversations in step 8 are what they want, recommend one of two rollouts: a live test on part of the traffic, or a promotion. Act only after the user confirms. If the user starts a live test, compare the change set with the live agent once it has traffic. A pass rate leaves undecided conversations out. If a metric's undecided conversations rose and its failures fell, both as a share of pass, fail and undecided, failures may have become undecided: do not report it as an improvement. Decide the promotion on the target metrics, the rows with `is_target` true. Treat every other metric as a guardrail. If a guardrail is worse on the change set by more than 2 points, name it and ask the user if the drop concerns them. A guardrail drop does not stop the promotion.
 
 **Use:** `adacli <instance> changesets set-rollout <changeset_id> --percent <n> --max-conversations <n> --json`; `adacli <instance> changesets promote <changeset_id> --yes`; `adacli <instance> changesets compare <changeset_id> --start <YYYY-MM-DD> --end <YYYY-MM-DD> --json`.
 
-**Report:** A before and after table: each test and each metric, on the live agent and on the change set. Then your recommendation.
+**Report:** A before and after table: each test and each metric, on the live agent and on the change set, with the target metrics first. Then each guardrail that dropped by more than 2 points, and your recommendation.
 
 ### Rules
 
