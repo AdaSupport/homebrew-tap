@@ -2,7 +2,7 @@
 
 # Improving a custom metric with adacli
 
-Loop version 13-backfill. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
+Loop version 14-backfill. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
 
 > Improve the "No unverified refund promises" metric with adacli.
 > Filters: Date range = Last 30 days; Channel = Voice; Intent = Cancel a booking; Variable order_status = refunded
@@ -89,11 +89,11 @@ When every test passes the step 7 rules and no metric got worse, show the user 3
 **Report:** Each conversation you showed with its test run ID and whether it is a target case or a guard case. Then the user's answer.
 
 ### 9. Recommend a rollout
-When the user says the simulated conversations in step 8 are what they want, recommend one of two rollouts: a live test on part of the traffic, or a promotion. Act only after the user confirms. If the user starts a live test, compare the change set with the live agent once it has traffic. A pass rate leaves undecided conversations out. If a metric's undecided conversations rose and its failures fell, both as a share of pass, fail and undecided, failures may have become undecided: do not report it as an improvement. Decide the promotion on the target metrics, the rows with `is_target` true. Treat every other metric as a guardrail. If a guardrail is worse on the change set by more than 2 points, name it and ask the user if the drop concerns them. A guardrail drop does not stop the promotion.
+When the user says the simulated conversations in step 8 are what they want, recommend one of two rollouts: a live test on part of the traffic, or a promotion. Act only after the user confirms. If the user starts a live test, compare the change set with the live agent once it has traffic. A pass rate leaves undecided conversations out. If a metric's undecided conversations rose and its failures fell, both as a share of pass, fail and undecided, failures may have become undecided: do not report it as an improvement. Decide the promotion on the change set's objectives, the `objectives` list, when it has any: each objective must improve. Otherwise decide it on the target metrics, the rows with `is_target` true. Treat every other metric as a guardrail. If a guardrail is worse on the change set by more than 2 points, name it and ask the user if the drop concerns them. A guardrail drop does not stop the promotion.
 
 **Use:** `adacli <instance> changesets set-rollout <changeset_id> --percent <n> --max-conversations <n> --json`; `adacli <instance> changesets promote <changeset_id> --yes`; `adacli <instance> changesets compare <changeset_id> --start <YYYY-MM-DD> --end <YYYY-MM-DD> --json`.
 
-**Report:** A before and after table: each test and each metric, on the live agent and on the change set, with the target metrics first. Then each guardrail that dropped by more than 2 points, and your recommendation.
+**Report:** A before and after table: each test and each metric, on the live agent and on the change set, with the objectives or the target metrics first. Then each guardrail that dropped by more than 2 points, and your recommendation.
 
 ### Rules
 
