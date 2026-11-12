@@ -1,4 +1,4 @@
-<!-- Generated from api/core/analytics/custom_metrics/improvement_loop.py by make metric-loop in api/. Edit the steps there, not this file. -->
+<!-- Generated from api/core/improvement_loop/spec/ by make metric-loop in api/. Edit the steps there, not this file. -->
 
 # Improving a custom metric with adacli
 
