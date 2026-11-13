@@ -19,7 +19,11 @@ once to load the full command/flag/exit-code contract.
 ## Start from a failing metric
 
 If the user names a custom metric to improve ("Improve the X metric with adacli"), follow
-[metric-loop.md](metric-loop.md) in place of steps 1 to 7. Step 0 still applies. It stages every fix on a change set.
+the improvement loop in place of steps 1 to 7. If `adacli <instance> --help` lists `loop`, run
+`adacli <instance> loop --json` and follow its `markdown`. adacli lists `loop` only when the
+improvement loop is on for the account. If `upgrade_required` is true, tell the user to upgrade
+adacli. If adacli does not list `loop`, `adacli <instance> loop --json` exits non-zero, or
+`upgrade_required` is true, follow [metric-loop.md](metric-loop.md). Step 0 still applies. It stages every fix on a change set.
 Run `changesets promote --yes` or `changesets set-rollout` only after the user confirms in chat.
 
 ## 0. Safety first (always)
