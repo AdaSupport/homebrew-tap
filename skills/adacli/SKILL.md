@@ -20,7 +20,9 @@ adacli <instance> <command> [subcommand] [options]
 
 1. **Confirm the instance** with the user if ambiguous — every command targets one.
 2. **Check the session**: `adacli <instance> status --json`. If not connected, tell the
-   user to run `adacli <instance> login` (it may need interactive email/password/MFA).
+   user to run `adacli <instance> login` (it prints a device code to approve in the dashboard). For
+   headless login, use `ADACLI_EMAIL`/`ADACLI_PASSWORD` or `--password-stdin`. Never put a
+   password in a command.
 3. **Prefer `--json`** for every read so you can parse with `jq`. Output is JSON on
    stdout; errors are a JSON envelope on stderr; the **typed exit code** reflects the failure
    class: `0` ok, `2` usage, `3` auth, `4` forbidden, `5` not-found, `6` rate-limit, `7` read-only,
