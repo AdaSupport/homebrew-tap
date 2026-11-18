@@ -19,7 +19,7 @@ adacli <instance> <command> [subcommand] [options]
 ## Always do first
 
 1. **Confirm the instance** with the user if ambiguous — every command targets one.
-2. **Check the session**: `adacli <instance> status --json`. If not connected, tell the
+2. **Check the session**: `adacli <instance> status --json`. If not connected (exit `3`), tell the
    user to run `adacli <instance> login` (it prints a device code to approve in the dashboard). For
    headless login, use `ADACLI_EMAIL`/`ADACLI_PASSWORD` or `--password-stdin`. Never put a
    password in a command.
