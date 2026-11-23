@@ -16,19 +16,21 @@ which is agent-native: pass `--json`, parse stdout, branch on the typed exit cod
 (`0` ok, `2` usage, `3` auth, `5` not-found, `6` rate-limit). Run `adacli <instance> agent-context`
 once to load the full command/flag/exit-code contract.
 
-## Start from a failing metric, a described behavior or conversation IDs
+## Start from a failing metric, a signal, a described behavior or conversation IDs
 
-If the user names a custom metric to improve ("Improve the X metric with adacli"),
-describes what the agent does wrong in their own words ("The agent keeps asking for the
-order number. Fix it."), or gives one or more conversation IDs to fix ("Fix conversation
-<conversation_id>."), follow the improvement loop in place of steps 1 to 7. If
+If the user names a custom metric to improve ("Improve the X metric with adacli"), names
+unresolved conversations, low CSAT or a handoff reason ("Too many billing conversations
+hand off. Fix it."), describes what the agent does wrong in their own words ("The agent
+keeps asking for the order number. Fix it."), or gives one or more conversation IDs to fix
+("Fix conversation <conversation_id>."), follow the improvement loop in place of steps 1
+to 7. If
 `adacli <instance> --help` lists `loop`, run `adacli <instance> loop --json` and follow its
 `markdown`: its router picks the way in that fits the request. adacli lists `loop` only when
 the improvement loop is on for the account. If `upgrade_required` is true, tell the user to
 upgrade adacli. If adacli does not list `loop`, `adacli <instance> loop --json` exits
 non-zero, or `upgrade_required` is true, follow [metric-loop.md](metric-loop.md) for a
-request that names a metric, and steps 1 to 7 for a described behavior or conversation
-IDs. Step 0 still
+request that names a metric, and steps 1 to 7 for a signal, a described behavior or
+conversation IDs. Step 0 still
 applies. The loop stages every fix on a change set. Run `changesets promote --yes` or
 `changesets set-rollout` only after the user confirms in chat.
 
