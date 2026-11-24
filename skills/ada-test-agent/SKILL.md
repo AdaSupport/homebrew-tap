@@ -58,7 +58,9 @@ adacli <instance> testing runs compare --baseline <run-ids...> --candidate <run-
 3. Re-run the same cases; `testing runs compare` baseline vs candidate for the delta.
 4. Keep the change only if it improved (no regressions); else roll back. Report the delta.
 
-For the **fully autonomous** version of this loop (gather → diagnose → fix → compare → keep/rollback → hill-climb chart), use the **ada-optimize** skill.
+If `adacli <instance> --help` lists `loop`, use the improvement loop in place of these 4 steps: run `adacli <instance> loop --json` and follow its `markdown`. The loop stages the change on a change set and tests it against the live agent before the user decides on a rollout.
+
+Only when the account does not have the loop, use the **ada-optimize** skill for the **fully autonomous** version of this loop (gather → diagnose → fix → compare → keep/rollback → hill-climb chart). The canonical improvement-loop note in the `adacli` skill says when the account does not have it, and what to do when `loop --json` fails.
 
 ## Rules
 

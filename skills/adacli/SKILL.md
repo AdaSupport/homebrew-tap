@@ -114,7 +114,17 @@ adacli <instance> snapshot export -o config.tar.gz    # full config snapshot
 
 ## Specialized workflows (separate skills)
 
-- **Improve the agent autonomously (the main event)** → **ada-optimize** — example → diagnosis → fix → re-test → hill-climb
+- **Improve the agent, or fix what you found** → the improvement loop when the account has
+  it, else **ada-optimize** (canonical improvement-loop note):
+  - If `adacli <instance> --help` lists `loop`, run `adacli <instance> loop --json` and follow
+    its `markdown`. The loop stages the fix on a change set and tests it before the user
+    decides on a rollout. adacli lists `loop` only when the improvement loop is on for the
+    account.
+  - Use **ada-optimize** (example → diagnosis → fix → re-test → hill-climb) only when adacli
+    does not list `loop`, or `loop --json` exits `5` (not-found: the loop is off for the
+    account). Tell the user first, because **ada-optimize** edits the live agent.
+  - On any other error from `loop --json`, run it again or report the error. Do not change
+    to direct edits.
 - Find what the agent gets wrong (incl. `conversations diagnose`) → **ada-insights**
 - Knowledge base at scale → **ada-knowledge**
 - Author + run tests, compare runs → **ada-test-agent**

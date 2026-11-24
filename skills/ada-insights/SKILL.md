@@ -81,7 +81,8 @@ adacli <instance> conversations diagnose <id> --json
 `surface` (knowledge | playbook | guidance | handoff | unknown), the `target` id to fix, a
 `confidence`, and a `why`. Its `handoff_reason` names the latest recorded handoff reason and
 its `fix_surface`. Use it instead of hand-classifying every conversation. (adacli names
-the surface; *you* author the fix — see **ada-optimize** to close the loop.) A `surface` of
+the surface; *you* author the fix — see **ada-optimize** to close the loop.) When the answer
+has a `next` field, show it to the user: it names the improvement loop as the next step. A `surface` of
 `unknown` means the read was unverifiable (exit `22`): retry the read, do not author a fix
 (canonical exit-22 note in the `adacli` skill).
 
@@ -113,7 +114,12 @@ the preview first, and run `--yes` only after they agree.
 
 ## Rules
 
-- This skill is **read-only** — it diagnoses. Make changes via **ada-knowledge**,
-  `guidance`, or `playbooks`, and validate with **ada-test-agent**.
+- This skill is **read-only** — it diagnoses. To fix what you found, offer the improvement
+  loop: if `adacli <instance> --help` lists `loop`, run `adacli <instance> loop --json` and
+  follow its `markdown`. The loop stages the fix on a change set and tests it before the user
+  decides on a rollout. Only when the account does not have the loop, make changes via
+  **ada-knowledge**, `guidance`, or `playbooks`, and validate with **ada-test-agent**. The
+  canonical improvement-loop note in the `adacli` skill says when the account does not have
+  it, and what to do when `loop --json` fails.
 - Conversation data can be large/PII-bearing — sample a bounded set, don't dump everything.
 - Cite specific conversation ids and reasoning evidence in your findings.
