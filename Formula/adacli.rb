@@ -6,29 +6,29 @@
 class Adacli < Formula
   desc "Agent-native CLI for managing and improving Ada AI Agents"
   homepage "https://github.com/AdaSupport/homebrew-tap"
-  version "1.20.7"
+  version "1.20.8"
   # Proprietary — AdaCLI License Notice (© Ada Support Inc.), not an SPDX/open-source license.
   license :cannot_represent
 
   on_macos do
     on_arm do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.7/adacli-darwin-arm64.tar.gz"
-      sha256 "28c447186e6588ded6b9eefce2248822078296db563fd8b53ad6864af2cb743e"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.8/adacli-darwin-arm64.tar.gz"
+      sha256 "247b533bf984079f7c8463e3c3b673e6eaf5fdfa79b50135eb231012b4713e46"
     end
     on_intel do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.7/adacli-darwin-x64.tar.gz"
-      sha256 "db5ff318061a58ead09e95b04909e3b01c2179f28899a22edd3738792de24afb"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.8/adacli-darwin-x64.tar.gz"
+      sha256 "f621e5150e0cd392ab0dba3d94fda02d1ddb700021487be7aa7e82cd96573e77"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.7/adacli-linux-arm64.tar.gz"
-      sha256 "0d1602abfc136e0f0d373276c4214b7b68733ee6b5663d363033691055a19143"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.8/adacli-linux-arm64.tar.gz"
+      sha256 "0b57aa7ce1d188a14903a6b98e98268dcab83d61403860114a5642db0345db08"
     end
     on_intel do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.7/adacli-linux-x64.tar.gz"
-      sha256 "94776e272eafa20333adc6e9fcaa5f95dcbbdb3d470967336f1e24e78550e632"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.8/adacli-linux-x64.tar.gz"
+      sha256 "f44a0ea8b33d8d55d658f7cef22657107a7ee228e3395c5d8dbb85c9f739ead2"
     end
   end
 
