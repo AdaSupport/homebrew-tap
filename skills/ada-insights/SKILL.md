@@ -115,11 +115,8 @@ the preview first, and run `--yes` only after they agree.
 ## Rules
 
 - This skill is **read-only** — it diagnoses. To fix what you found, offer the improvement
-  loop: if `adacli <instance> --help` lists `loop`, run `adacli <instance> loop --json` and
-  follow its `markdown`. The loop stages the fix on a change set and tests it before the user
-  decides on a rollout. Only when the account does not have the loop, make changes via
-  **ada-knowledge**, `guidance`, or `playbooks`, and validate with **ada-test-agent**. The
-  canonical improvement-loop note in the `adacli` skill says when the account does not have
-  it, and what to do when `loop --json` fails.
+  loop through **ada-optimize**. It runs `adacli <instance> loop --json`, which stages the fix
+  on a change set and tests it before the user decides on a rollout. Its steps say what to do
+  when the account does not have the loop.
 - Conversation data can be large/PII-bearing — sample a bounded set, don't dump everything.
 - Cite specific conversation ids and reasoning evidence in your findings.
