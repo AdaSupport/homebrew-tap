@@ -2,7 +2,7 @@
 
 # Improving a custom metric with adacli
 
-Loop version 17-backfill. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
+Loop version 18-backfill. Follow this loop when the user asks you to improve a custom metric with adacli. Pass `--json` and parse stdout. The request usually looks like this:
 
 > Improve the "No unverified refund promises" metric with adacli.
 > Filters: Date range = Last 30 days; Channel = Voice; Intent = Cancel a booking; Variable order_status = refunded
@@ -13,7 +13,7 @@ The Filters line uses the dashboard's names and values. Date range sets `--start
 
 **The direction decides which verdict is a failure.** `pass` and `fail` name the raw verdict, not the desirable outcome. On a `higher_is_better` metric, the undesirable verdict is `fail`. On a `higher_is_worse` metric it is `pass`, because the pass text describes the behaviour to stop. Read the direction in step 1 and use the undesirable verdict in every later step. Below, a failure is a conversation with the undesirable verdict.
 
-adacli has no pass rate command with filters. In steps 1 and 2, count the `pass` and the `fail` conversations with `conversations search` and the same filters. Keep `--filter ISTESTUSER:IS:true` on every search, because the dashboard pass rate counts test conversations. The pass rate is pass / (pass + fail). Each count is complete only when the command exits 0 and its JSON shows `partial: false` and `capped: false`. If a count is not complete, report the pass rate as incomplete. Do not divide.
+In steps 1 and 2, read the pass and the fail counts with `custom-metrics pass-rate` and the same filters. It counts the same conversations as the dashboard pass rate, test conversations too. The pass rate is pass / (pass + fail). If `custom-metrics pass-rate` refuses a filter, count the `pass` and the `fail` conversations with `conversations search`, the same filters and `--filter ISTESTUSER:IS:true`. A search count is complete only when its JSON shows `partial: false` and `capped: false`. List the failures with `custom-metrics latest-verdicts` and the same filters. It lists the conversations that `custom-metrics pass-rate` counts. If you counted with `conversations search`, list the failures with `conversations search` too. If `custom-metrics pass-rate` or `custom-metrics latest-verdicts` fails because it could not read the verdicts, report the pass rate or the failures as not read. Do not use 0 in their place.
 
 In step 7, make a private folder with `mktemp -d`. Its mode is 0700, so only you can read it. Write the new test cases to one JSON file in that folder, as an array with one object per test case. Pass the file to `testing cases create`. Then delete the folder, also when the create fails or stops. Each object has `name`, `user_message`, `scenario`, `success_criteria`, `channel_id`, `language`, `variables`, `external_systems` and `metric_ids`. The file keeps the long `external_systems` text out of the shell.
 
@@ -26,7 +26,7 @@ Run step 1a only if `custom-metrics --help` lists `backfill`. adacli lists it on
 ### 1. Read the metric and its numbers
 Resolve the metric by its name. If no metric or more than one metric has that name, ask the user which one. Read its pass, fail and not-applicable text, its direction, its scope and its state. Then read its pass rate for the window and the filters.
 
-**Use:** `adacli <instance> custom-metrics list --json`; `adacli <instance> custom-metrics get <metric_id> --json`; `adacli <instance> conversations search --custom-metric <metric_id> --metric-result pass --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter ISTESTUSER:IS:true --all --json`; `adacli <instance> conversations search --custom-metric <metric_id> --metric-result fail --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter ISTESTUSER:IS:true --all --json`.
+**Use:** `adacli <instance> custom-metrics list --json`; `adacli <instance> custom-metrics get <metric_id> --json`; `adacli <instance> custom-metrics pass-rate <metric_id> --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter <spec>... --json`.
 
 **Report:** The metric's name and ID, its direction, scope and state, the window and the number of conversations with a verdict in it, whether the user set them or the default applied, each filter as applied or not applied, the pass rate with the pass and fail counts, and the loop version.
 
@@ -40,14 +40,14 @@ A metric grades only the conversations that finish after it goes live. A backfil
 ### 2. Check whether the metric or the judge changed
 Read `version_history` on the metric, `judge_version_history` and `versioned_judge_since`. If the output has no `versioned_judge_since` field, the installed adacli is too old to show it. Ask the user to upgrade adacli, and stop until they do. A metric version with `updated` true is a change day. The history starts at the judge version this account first scored with, which is not a change. Each later judge version is a change day. `versioned_judge_since` is when the account moved from the old judge to that judge. It is a change day too, because the account gets no judge version for that day. It is null when the account has no such move. A change day is the date of its `live_at` or of `versioned_judge_since`, in the time zone of the pass rate reads. Convert the time to that time zone before you take the date. If 7 full days follow a change day in the window, start the window on the latest such change day. Tell the user the new start date, and use that window in every later step. A change day on the first day of the window is not in the window. If no change day falls in the window, go on to the next step. For each change day in the window, read the pass rate twice, with the filters of step 1. Read it for the 7 days before the change day. Then read it for the 7 days that start on the change day. If fewer than 7 days follow it, use the days up to today. If the pass rate moves by 5 percentage points or more across the change day, the move starts on that day. If the move starts on another day, go on to the next step. If the move starts on a change day, report it and stop the loop. Do not look for root causes, and do not propose a config change for that move. Offer the user a choice. The first choice is to wait 7 days, so that the trend shows the new level. The next run then starts the window on that change day. If this loop has step 1a, the second choice is to re-score the metric. Tell the user first that the old metric then stops grading. Create a copy of the metric as a draft, with the same fields and a new name. Set the old metric to draft. Activate the copy, then backfill it. Run that backfill as step 1a says. Then run the loop on the copy.
 
-**Use:** `adacli <instance> custom-metrics get <metric_id> --json`; `adacli <instance> conversations search --custom-metric <metric_id> --metric-result pass --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter ISTESTUSER:IS:true --all --json`; `adacli <instance> conversations search --custom-metric <metric_id> --metric-result fail --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter ISTESTUSER:IS:true --all --json`.
+**Use:** `adacli <instance> custom-metrics get <metric_id> --json`; `adacli <instance> custom-metrics pass-rate <metric_id> --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter <spec>... --json`.
 
 **Report:** Each change day in the window, or none, and the pass rate on each side of it. The new window start, if a change day moved it. If a move starts on a change day, a table with one row per move: the metric, the move and its start date, judge change that day yes or no, metric definition change that day yes or no, and the loop action.
 
 ### 3. Read the failing conversations
 List the conversations with the undesirable verdict for the window and the filters. Include test conversations, because the pass rate counts them. If step 1 already listed them, use that list. Read at least 3 full transcripts. Take the number of failures from step 1, not from the length of a list.
 
-**Use:** `adacli <instance> conversations log <conversation_id> --json`.
+**Use:** `adacli <instance> custom-metrics latest-verdicts <metric_id> --verdict <verdict> --start <YYYY-MM-DD> --end <YYYY-MM-DD> --filter <spec>... --json`; `adacli <instance> conversations log <conversation_id> --json`.
 
 **Report:** The number of failures from step 1, and the IDs of the transcripts you read.
 

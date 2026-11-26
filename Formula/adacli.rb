@@ -6,29 +6,29 @@
 class Adacli < Formula
   desc "Agent-native CLI for managing and improving Ada AI Agents"
   homepage "https://github.com/AdaSupport/homebrew-tap"
-  version "1.20.15"
+  version "1.21.0"
   # Proprietary — AdaCLI License Notice (© Ada Support Inc.), not an SPDX/open-source license.
   license :cannot_represent
 
   on_macos do
     on_arm do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.15/adacli-darwin-arm64.tar.gz"
-      sha256 "1cfba66e160fad38e13e41759e53d1f03e9930600b8a6b532db7679e6edbaedb"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.21.0/adacli-darwin-arm64.tar.gz"
+      sha256 "3b4b61ddae17f4f458c19ed8bdda9e6935a66e64cfc908e83f9c5513cd17bd2b"
     end
     on_intel do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.15/adacli-darwin-x64.tar.gz"
-      sha256 "f9a9fd002b24c2a74689823da28f03aff56974ecb32113b0315517d45bbd5845"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.21.0/adacli-darwin-x64.tar.gz"
+      sha256 "7dbe6bee27d74c952027f2ee3940dd96fc1933b612b08bb5a6d98e2c424edae4"
     end
   end
 
   on_linux do
     on_arm do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.15/adacli-linux-arm64.tar.gz"
-      sha256 "877293410c40f88e9fb57c6dfc17ff25c9c47969fe2a208e6bc12b89c5efd3cb"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.21.0/adacli-linux-arm64.tar.gz"
+      sha256 "e30782849c94e55c8f1c0f95dd1bd26e5ec8fecc82f2cc04faa35a81def57ee8"
     end
     on_intel do
-      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.20.15/adacli-linux-x64.tar.gz"
-      sha256 "06292059e94697abc59741a2ad74913d0eab7437797042051eefbe5a696a5793"
+      url "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.21.0/adacli-linux-x64.tar.gz"
+      sha256 "a39c69da586f0be0e488c136b3771357cf26d6d1394c114b8f74a96bfaaf21ae"
     end
   end
 
