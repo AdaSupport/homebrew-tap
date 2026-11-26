@@ -81,21 +81,10 @@ adacli <instance> conversations diagnose <id> --json
 `surface` (knowledge | playbook | guidance | handoff | unknown), the `target` id to fix, a
 `confidence`, and a `why`. Its `handoff_reason` names the latest recorded handoff reason and
 its `fix_surface`. Use it instead of hand-classifying every conversation. (adacli names
-the surface; *you* author the fix — see **ada-optimize** to close the loop.) When the answer
+the surface. To fix it, offer the improvement loop through **ada-optimize**.) When the answer
 has a `next` field, show it to the user: it names the improvement loop as the next step. A `surface` of
 `unknown` means the read was unverifiable (exit `22`): retry the read, do not author a fix
 (canonical exit-22 note in the `adacli` skill).
-
-## A practical "where are the gaps" pass
-
-1. `analytics topics --json` → rank topics by volume × low resolution.
-2. For the worst topic, `conversations search --topic <t> --all --limit 500 --json` → sample several.
-3. For each sample, `conversations reasoning <id> --json` → classify the failure:
-   - no relevant article retrieved → **knowledge gap** (fix via **ada-knowledge**)
-   - wrong/again-and-again playbook → **playbook issue**
-   - right info, wrong behavior → **guidance issue**
-4. Summarize the pattern + the specific fix for the user. Don't change anything without
-   showing the diagnosis first.
 
 ## Review recommended intents
 
@@ -115,8 +104,6 @@ the preview first, and run `--yes` only after they agree.
 ## Rules
 
 - This skill is **read-only** — it diagnoses. To fix what you found, offer the improvement
-  loop through **ada-optimize**. It runs `adacli <instance> loop --json`, which stages the fix
-  on a change set and tests it before the user decides on a rollout. Its steps say what to do
-  when the account does not have the loop.
+  loop through **ada-optimize**.
 - Conversation data can be large/PII-bearing — sample a bounded set, don't dump everything.
 - Cite specific conversation ids and reasoning evidence in your findings.

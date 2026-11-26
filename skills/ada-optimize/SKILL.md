@@ -1,6 +1,6 @@
 ---
 name: ada-optimize
-description: Autonomously improve an Ada AI agent with adacli — go from a failing example to measurably better performance. Drives the full loop (gather failures → build evals → diagnose → apply a fix → re-test → keep or roll back → hill-climb), then renders a Karpathy-style progress chart. Use when the user wants to improve/optimize an agent, raise resolution, fix what the agent gets wrong, or "make the agent better at X".
+description: Improve an Ada AI agent with adacli through the improvement loop that Ada serves with `adacli loop`. The loop finds the cause, stages a fix on a change set, tests it against the live agent, and rolls it out after the user approves. Use when the user wants to improve/optimize an agent, raise resolution, fix what the agent gets wrong, or "make the agent better at X".
 require-tools:
   - Bash
   - Read
@@ -25,11 +25,9 @@ so the loop is more current than any steps in this skill.
      the upgrade, follow [metric-loop.md](metric-loop.md) only for a request that names a custom
      metric. For any other request, wait for the upgrade.
    - Exit `5` with an error message that contains "The improvement loop is not enabled": the loop
-     is off for the account. Go to step 3. Treat any other exit `5` as any other error.
+     is off for the account. Do not run it again. For a request that names a custom metric, follow
+     [metric-loop.md](metric-loop.md). For any other request, tell the user that the improvement
+     loop is off for the account. Treat any other exit `5` as any other error.
    - Exit `3`: ask the user to log in with `adacli <instance> login`, then run it again.
-   - Any other error: run it again once. If it fails again, report the error. Follow
-     [metric-loop.md](metric-loop.md) only for a request that names a custom metric, because
-     [steps-without-loop.md](steps-without-loop.md) edits the live agent.
-3. When the loop is off for the account:
-   - For a request that names a custom metric, follow [metric-loop.md](metric-loop.md).
-   - For any other request, follow [steps-without-loop.md](steps-without-loop.md).
+   - Any other error: run it again once. If it fails again, report the error. For a request
+     that names a custom metric, follow [metric-loop.md](metric-loop.md).

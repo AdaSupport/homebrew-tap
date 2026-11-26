@@ -51,14 +51,9 @@ adacli <instance> testing runs compare --baseline <run-ids...> --candidate <run-
 # → { summary.delta, newly_passing, regressed }
 ```
 
-## A change-validation loop
+## Improve the agent
 
-1. Before a change, run the relevant cases (`--repeat 3`) to get a baseline.
-2. Make the change (knowledge/guidance/playbook).
-3. Re-run the same cases; `testing runs compare` baseline vs candidate for the delta.
-4. Keep the change only if it improved (no regressions); else roll back. Report the delta.
-
-To improve the agent, use the **ada-optimize** skill in place of these 4 steps. It runs the improvement loop, which stages the change on a change set and tests it against the live agent before the user decides on a rollout. Its steps say what to do when the account does not have the loop.
+To improve the agent, use the **ada-optimize** skill.
 
 ## Rules
 
