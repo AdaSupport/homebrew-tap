@@ -1,5 +1,5 @@
 {
-  "version": "1.22.1",
+  "version": "1.22.2",
   "description": "Agent-native CLI for managing and improving Ada AI Agents",
   "homepage": "https://github.com/AdaSupport/homebrew-tap",
   "license": {
@@ -7,8 +7,8 @@
   },
   "architecture": {
     "64bit": {
-      "url": "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.22.1/adacli-windows-x64.zip",
-      "hash": "1770a82b5e2b73e9bef9a55fc161d65a143eb65c8aa86d52ed3af114ec203baf"
+      "url": "https://github.com/AdaSupport/homebrew-tap/releases/download/adacli-v1.22.2/adacli-windows-x64.zip",
+      "hash": "16da1f501ec8d16189e61cabd233336c861d5662485fdfce0fd12ac70e9dca43"
     }
   },
   "bin": "adacli.exe",
