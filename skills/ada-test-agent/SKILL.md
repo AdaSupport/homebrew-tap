@@ -59,5 +59,8 @@ To improve the agent, use the **ada-optimize** skill.
 
 - **Check `testing quota` before creating runs** — they consume budget; don't burn it in loops.
 - Tie tests back to findings from **ada-insights** (test the exact failures you found).
-- After validating, snapshot the new config via **ada-config-snapshot** so the
-  known-good state is committed.
+- After the tests pass on a config that is already live, snapshot it via **ada-config-snapshot**
+  so the known-good state is committed.
+- When the tests check a staged change set, snapshot only after the promotion of the change set
+  succeeds. A snapshot before that records the live agent without the change. While the change
+  is still staged, report the change set ID and the test results.
